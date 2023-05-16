@@ -106,3 +106,5 @@ struct proc {
   char name[16];               // Process name (debugging)
   int mask;                    // Used for trace syscall
 };
+
+uint64 count_free_nproc();

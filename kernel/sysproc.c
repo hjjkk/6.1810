@@ -5,6 +5,7 @@
 #include "memlayout.h"
 #include "spinlock.h"
 #include "proc.h"
+#include "sysinfo.h"
 
 uint64
 sys_exit(void)
@@ -98,5 +99,19 @@ uint64 sys_trace(void) {
   if (p->mask == 0) {
     return -1;
   }
+  return 0;
+}
+
+// in kernel mode
+uint64 sys_sysinfo(void) {
+
+  uint64 addr = 0; // addr stored pointer of 'sys_info' in user kernel
+  argaddr(0, &addr);
+  // printf("addr is %p, &addr is %p\n", addr, &addr);
+  struct sysinfo tmp;
+  tmp.freemem = count_free_mem();
+  tmp.nproc = count_free_nproc();
+  if (copyout(myproc()->pagetable, addr, (char *)&tmp, sizeof(tmp)) < 0) 
+    return -1;
   return 0;
 }
