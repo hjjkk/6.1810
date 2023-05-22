@@ -210,8 +210,8 @@ proc_pagetable(struct proc *p)
   }
 
   // map the page below trapframe
-  if (mappages(pagetable, (TRAPFRAME - PGSIZE), PGSIZE, 
-              (uint64)p->usyscall_, PTE_U | PTE_R) < 0) {
+  if (mappages(pagetable, USYSCALL, PGSIZE, 
+              (uint64)p->usyscall_, PTE_U | PTE_R | PTE_W) < 0) {
     uvmunmap(pagetable, (TRAPFRAME - PGSIZE), 1, 0);
     uvmfree(pagetable, 0);
     return 0;
