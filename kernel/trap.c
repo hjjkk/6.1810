@@ -68,11 +68,12 @@ usertrap(void)
   } else if((which_dev = devintr()) != 0){
     // ok
     if (which_dev == 2) {
-      p->ticks ++;
-      if (p->ticks == p->interval) {
-        p->ticks = 0;
-        // Should call user-space function `p->handler`
-        p->trapframe->epc = (uint64)p->handler;
+      if (p->interval != 0) {
+        p->ticks ++;
+        if (p->ticks == p->interval) {
+          memmove(&p->last_tf, p->trapframe, sizeof(struct trapframe)); // do before set PC
+          p->trapframe->epc = (uint64)p->handler;
+        }
       }
     }
   } else {

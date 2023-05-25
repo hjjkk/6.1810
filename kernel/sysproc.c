@@ -97,7 +97,6 @@ uint64 sys_sigalarm() {
   int n;
   argint(0, &n);
   myproc()->interval = n;
-
   uint64 p_func;
   argaddr(1, &p_func);
   myproc()->handler = (void *)p_func;
@@ -106,5 +105,7 @@ uint64 sys_sigalarm() {
 }
 
 uint64 sys_sigreturn() {
-  return 0;
+  myproc()->ticks = 0;
+  memmove(myproc()->trapframe, &myproc()->last_tf,  sizeof(struct trapframe));
+  return myproc()->trapframe->a0;
 }
